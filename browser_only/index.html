@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tree-sitter Definitions Extractor</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <h1>Tree-sitter Definitions Extractor</h1>
+    <input 
+      type="text" 
+      id="repo-url" 
+      placeholder="Enter GitHub repo URL (zip)" 
+      value="https://github.com/mw3155/gift-picker"
+    />
+    <button id="fetch-repo">Fetch and Parse</button>
+    <div id="output"></div>
+  </div>
+  <script src="main.js" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+
+File: example_repo/base.py
+==========================
+
+Module: Abstract interface for document loader implementations.
+===============================================================
+
+Class: BaseLoader
+=================
+Interface for Document Loader.
+
+Implementations should implement the lazy-loading method using generators
+to avoid loading all Documents into memory at once.
+
+`load` is provided just for user convenience and should not be overridden.
+
+    Method: load(self)
+    ==================
+    Load data into Document objects.
+
+    Method: load_and_split(self, text_splitter)
+    ===========================================
+    Load Documents and split into chunks. Chunks are returned as Documents.
+    
+    Do not override this method. It should be considered to be deprecated!
+    
+    Args:
+    text_splitter: TextSplitter instance to use for splitting documents.
+    Defaults to RecursiveCharacterTextSplitter.
+    
+    Returns:
+    List of Documents.
+
+    Method: lazy_load(self)
+    =======================
+    A lazy loader for Documents.
+
+Class: BaseBlobParser
+=====================
+Abstract interface for blob parsers.
+
+A blob parser provides a way to parse raw data stored in a blob into one
+or more documents.
+
+The parser can be composed with blob loaders, making it easy to reuse
+a parser independent of how the blob was originally loaded.
+
+    Method: lazy_parse(self, blob)
+    ==============================
+    Lazy parsing interface.
+    
+    Subclasses are required to implement this method.
+    
+    Args:
+    blob: Blob instance
+    
+    Returns:
+    Generator of documents
+
+    Method: parse(self, blob)
+    =========================
+    Eagerly parse the blob into a document or documents.
+    
+    This is a convenience method for interactive development environment.
+    
+    Production applications should favor the lazy_parse method instead.
+    
+    Subclasses should generally not over-ride this parse method.
+    
+    Args:
+    blob: Blob instance
+    
+    Returns:
+    List of documents
