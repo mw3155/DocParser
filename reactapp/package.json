@@ -1,0 +1,31 @@
+{
+  "name": "reactapp",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "setup-languages": "mkdir -p public/tree-sitter && cd public/tree-sitter && curl -O https://github.com/tree-sitter/tree-sitter-javascript/releases/download/v0.20.1/tree-sitter-javascript.wasm && curl -O https://github.com/tree-sitter/tree-sitter-typescript/releases/download/v0.20.1/tree-sitter-typescript.wasm",
+    "postinstall": "mkdir -p public && cp node_modules/web-tree-sitter/tree-sitter.wasm public/ && npm run setup-languages"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "web-tree-sitter": "^0.20.8"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.15.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.15.0",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.14",
+    "globals": "^15.12.0",
+    "vite": "^6.0.1"
+  }
+}
