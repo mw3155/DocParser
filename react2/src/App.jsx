@@ -4,19 +4,30 @@ import Parser from 'web-tree-sitter'
 import { Octokit } from 'octokit'
 
 function App() {
-  const [repoUrl, setRepoUrl] = useState('')
+  const [repoUrl, setRepoUrl] = useState('https://github.com/mw3155/gift-picker')
   const [loading, setLoading] = useState(false)
   const [parser, setParser] = useState(null)
   const toast = useToast()
 
   useEffect(() => {
     async function initParser() {
-      await Parser.init()
-      const parser = new Parser()
-      // Load JavaScript grammar as an example
-      const Lang = await Parser.Language.load('/tree-sitter-javascript.wasm')
-      parser.setLanguage(Lang)
-      setParser(parser)
+      try {
+        await Parser.init()
+        console.log('initialized parser')
+        const parser = new Parser()
+        const Lang = await Parser.Language.load('/tree-sitter-javascript.wasm')
+        console.log('loaded lang', Lang)
+        parser.setLanguage(Lang)
+        setParser(parser)
+      } catch (error) {
+        console.error('Parser initialization failed:', error)
+        toast({
+          title: 'Error',
+          description: 'Failed to initialize code parser',
+          status: 'error',
+          duration: 3000,
+        })
+      }
     }
     initParser()
   }, [])
@@ -24,20 +35,26 @@ function App() {
   const extractFunctions = (tree) => {
     const functions = []
     const cursor = tree.walk()
+    console.log('walking tree')
 
     const visitNode = () => {
       const node = cursor.currentNode()
+      console.log('node', node)
 
       if (node.type === 'function_declaration' ||
         node.type === 'method_definition' ||
         node.type === 'arrow_function') {
+        console.log('found function', node.text)
         functions.push(node.text)
       }
 
       if (cursor.gotoFirstChild()) {
+        console.log('going to first child')
         do {
+          console.log('visiting child')
           visitNode()
         } while (cursor.gotoNextSibling())
+        console.log('going to parent')
         cursor.gotoParent()
       }
     }
@@ -63,6 +80,8 @@ function App() {
       const urlParts = repoUrl.split('/')
       const owner = urlParts[urlParts.length - 2]
       const repo = urlParts[urlParts.length - 1]
+      console.log('owner', owner)
+      console.log('repo', repo)
 
       const octokit = new Octokit()
 
@@ -72,6 +91,7 @@ function App() {
         repo,
         path: '',
       })
+      console.log('files', files)
 
       const jsFiles = files.filter(file =>
         file.type === 'file' &&
@@ -81,6 +101,7 @@ function App() {
       let allFunctions = []
 
       for (const file of jsFiles) {
+        console.log('file', file)
         const { data: content } = await octokit.rest.repos.getContent({
           owner,
           repo,
